@@ -13,6 +13,33 @@ public interface EventoNivelRepository extends JpaRepository<EventoNivel, Long> 
     Optional<EventoNivel> findFirstBySensorIdAndEncerradoEmIsNullOrderByIniciadoEmDesc(Long sensorId);
 
     @Query("""
+            select e from EventoNivel e join fetch e.sensor
+            where e.encerradoEm is null and e.notificado = false
+            order by e.iniciadoEm
+            """)
+    List<EventoNivel> aberturasPendentes();
+
+    @Query("""
+            select e from EventoNivel e
+            where e.sensor.id = :sensorId
+              and e.encerradoEm is not null
+              and e.alertaCidadaoId is not null
+              and e.encerramentoNotificado = false
+            order by e.iniciadoEm
+            """)
+    List<EventoNivel> encerramentosPendentes(@Param("sensorId") Long sensorId);
+
+    @Query("""
+            select e from EventoNivel e join fetch e.sensor s
+            where e.encerradoEm is not null
+              and e.alertaCidadaoId is not null
+              and e.encerramentoNotificado = false
+              and not exists (select a.id from EventoNivel a where a.sensor = s and a.encerradoEm is null)
+            order by e.iniciadoEm
+            """)
+    List<EventoNivel> encerramentosPendentesDeSensoresNormais();
+
+    @Query("""
             select e from EventoNivel e join fetch e.sensor s
             where (:areaRiscoId is null or s.areaRiscoId = :areaRiscoId)
             order by e.iniciadoEm desc

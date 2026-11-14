@@ -19,6 +19,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -80,7 +81,28 @@ class MigracoesTest {
                 .satisfies(aberto -> {
                     assertThat(aberto.getId()).isEqualTo(evento.getId());
                     assertThat(aberto.isNotificado()).isFalse();
+                    assertThat(aberto.isEncerramentoNotificado()).isFalse();
                     assertThat(aberto.getAlertaCidadaoId()).isNull();
                 });
+    }
+
+    @Test
+    void consultasDePendentesEncontramOQueFaltaAvisarAoCidadao() {
+        Sensor romano = sensores.findByCodigo("SNS-ROMANO-01").orElseThrow();
+        Sensor ipiranga = sensores.findByCodigo("SNS-IPIRANGA-01").orElseThrow();
+        Instant agora = Instant.now().truncatedTo(ChronoUnit.MICROS);
+
+        EventoNivel antigoDoRomano = new EventoNivel(romano, Faixa.ATENCAO, new BigDecimal("160"), agora.minusSeconds(600));
+        antigoDoRomano.registrarAlertaCidadao(4L);
+        antigoDoRomano.encerrar(agora.minusSeconds(300));
+        EventoNivel abertoDoRomano = new EventoNivel(romano, Faixa.ALERTA, new BigDecimal("235"), agora.minusSeconds(300));
+        EventoNivel encerradoDoIpiranga = new EventoNivel(ipiranga, Faixa.ATENCAO, new BigDecimal("130"), agora.minusSeconds(120));
+        encerradoDoIpiranga.registrarAlertaCidadao(5L);
+        encerradoDoIpiranga.encerrar(agora);
+        eventos.saveAllAndFlush(List.of(antigoDoRomano, abertoDoRomano, encerradoDoIpiranga));
+
+        assertThat(eventos.aberturasPendentes()).containsExactly(abertoDoRomano);
+        assertThat(eventos.encerramentosPendentes(romano.getId())).containsExactly(antigoDoRomano);
+        assertThat(eventos.encerramentosPendentesDeSensoresNormais()).containsExactly(encerradoDoIpiranga);
     }
 }

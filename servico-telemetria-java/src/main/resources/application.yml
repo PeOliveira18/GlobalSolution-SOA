@@ -36,6 +36,14 @@ spring:
     baseline-version: 0
     clean-disabled: true
 
+cidadao:
+  base-url: ${CIDADAO_BASE_URL:http://localhost:5080}
+  api-key: ${CIDADAO_API_KEY:}
+  timeout: 3s
+  reenvio:
+    habilitado: true
+    intervalo: PT1M
+
 springdoc:
   default-produces-media-type: application/json
   api-docs:

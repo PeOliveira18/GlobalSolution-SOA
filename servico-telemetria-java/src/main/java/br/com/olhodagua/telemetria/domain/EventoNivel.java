@@ -1,6 +1,7 @@
 package br.com.olhodagua.telemetria.domain;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.Enumerated;
@@ -11,6 +12,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
+import org.hibernate.type.NumericBooleanConverter;
 
 import java.math.BigDecimal;
 import java.time.Instant;
@@ -41,8 +43,13 @@ public class EventoNivel {
 
     private Long alertaCidadaoId;
 
+    @Convert(converter = NumericBooleanConverter.class)
     @Column(nullable = false)
     private boolean notificado;
+
+    @Convert(converter = NumericBooleanConverter.class)
+    @Column(nullable = false)
+    private boolean encerramentoNotificado;
 
     protected EventoNivel() {
     }
@@ -77,6 +84,25 @@ public class EventoNivel {
             throw new RegraVioladaException("Um evento só pode descer para uma faixa entre ATENCAO e a faixa atual.");
         }
         this.faixa = novaFaixa;
+    }
+
+    public void registrarAlertaCidadao(Long alertaId) {
+        if (alertaId == null) {
+            throw new RegraVioladaException("O Serviço do Cidadão precisa devolver o id do alerta.");
+        }
+        this.alertaCidadaoId = alertaId;
+        this.notificado = true;
+    }
+
+    public void registrarEncerramentoAvisado() {
+        if (isAtivo()) {
+            throw new RegraVioladaException("Só um evento encerrado pode ter o encerramento avisado.");
+        }
+        this.encerramentoNotificado = true;
+    }
+
+    public boolean isEncerramentoNotificado() {
+        return encerramentoNotificado;
     }
 
     public Long getId() {
