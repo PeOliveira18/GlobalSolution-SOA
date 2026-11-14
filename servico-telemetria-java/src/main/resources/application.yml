@@ -5,6 +5,10 @@ spring:
   application:
     name: telemetria
 
+  web:
+    locale: pt_BR
+    locale-resolver: fixed
+
   datasource:
     url: ${SPRING_DATASOURCE_URL}
     username: ${SPRING_DATASOURCE_USERNAME}
@@ -33,6 +37,7 @@ spring:
     clean-disabled: true
 
 springdoc:
+  default-produces-media-type: application/json
   api-docs:
     path: /v3/api-docs
   swagger-ui:

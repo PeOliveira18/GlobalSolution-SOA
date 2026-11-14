@@ -1,5 +1,6 @@
 package br.com.olhodagua.telemetria.infrastructure;
 
+import br.com.olhodagua.telemetria.domain.ClassificadorNivel;
 import br.com.olhodagua.telemetria.domain.EventoNivel;
 import br.com.olhodagua.telemetria.domain.Faixa;
 import br.com.olhodagua.telemetria.domain.Leitura;
@@ -12,8 +13,7 @@ import br.com.olhodagua.telemetria.infrastructure.repository.LeituraRepository;
 import br.com.olhodagua.telemetria.infrastructure.repository.SensorRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.ActiveProfiles;
+import br.com.olhodagua.telemetria.TesteComBancoEmMemoria;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
@@ -22,8 +22,7 @@ import java.time.temporal.ChronoUnit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-@SpringBootTest
-@ActiveProfiles("test")
+@TesteComBancoEmMemoria
 @Transactional
 class MigracoesTest {
 
@@ -71,7 +70,7 @@ class MigracoesTest {
         Instant agora = Instant.now().truncatedTo(ChronoUnit.MICROS);
 
         Leitura leitura = leituras.saveAndFlush(
-                new Leitura(sensor, new BigDecimal("235.00"), Unidade.CM, Faixa.ALERTA, agora));
+                sensor.registrarLeitura(new BigDecimal("235.00"), Unidade.CM, new ClassificadorNivel(), agora));
         EventoNivel evento = eventos.saveAndFlush(
                 new EventoNivel(sensor, Faixa.ALERTA, new BigDecimal("235.00"), agora));
 

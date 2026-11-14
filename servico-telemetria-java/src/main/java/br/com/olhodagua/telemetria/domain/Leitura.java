@@ -44,7 +44,7 @@ public class Leitura {
     protected Leitura() {
     }
 
-    public Leitura(Sensor sensor, BigDecimal valor, Unidade unidade, Faixa faixaCalculada, Instant registradaEm) {
+    Leitura(Sensor sensor, BigDecimal valor, Unidade unidade, Faixa faixaCalculada, Instant registradaEm) {
         this.sensor = sensor;
         this.valor = valor;
         this.unidade = unidade;

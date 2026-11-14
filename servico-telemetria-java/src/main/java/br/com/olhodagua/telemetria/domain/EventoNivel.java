@@ -48,11 +48,35 @@ public class EventoNivel {
     }
 
     public EventoNivel(Sensor sensor, Faixa faixa, BigDecimal valorDisparo, Instant iniciadoEm) {
+        if (faixa == null || faixa == Faixa.NORMAL) {
+            throw new RegraVioladaException("Um evento de nível só existe acima da faixa NORMAL.");
+        }
         this.sensor = sensor;
         this.faixa = faixa;
         this.valorDisparo = valorDisparo;
         this.iniciadoEm = iniciadoEm;
         this.notificado = false;
+    }
+
+    public boolean isAtivo() {
+        return encerradoEm == null;
+    }
+
+    public void encerrar(Instant instante) {
+        if (!isAtivo()) {
+            throw new RegraVioladaException("O evento já foi encerrado.");
+        }
+        if (instante.isBefore(iniciadoEm)) {
+            throw new RegraVioladaException("O evento não pode terminar antes de começar.");
+        }
+        this.encerradoEm = instante;
+    }
+
+    public void rebaixarPara(Faixa novaFaixa) {
+        if (novaFaixa == null || novaFaixa == Faixa.NORMAL || novaFaixa.acimaDe(faixa)) {
+            throw new RegraVioladaException("Um evento só pode descer para uma faixa entre ATENCAO e a faixa atual.");
+        }
+        this.faixa = novaFaixa;
     }
 
     public Long getId() {
