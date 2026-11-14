@@ -7,7 +7,7 @@
 | Campo | Resposta |
 |---|---|
 | **Nome** | Olho d'Água |
-| **Cidade e bairro** | São Paulo — Jardim Pantanal, São Miguel Paulista (várzea do Rio Tietê) · *placeholder: trocar pelo bairro observado pela equipe* |
+| **Cidade e bairro** | São Paulo — Jardim Pantanal, em São Miguel Paulista (zona leste), na várzea do Rio Tietê. Os dados de demonstração também cobrem o Jardim Romano e a região do Córrego Ipiranga |
 | **Cidadão beneficiado** | Morador de área de risco de alagamento — em especial idosos, pessoas com mobilidade reduzida e famílias que moram perto de córregos |
 | **Problema, em uma frase** | Quem mora perto de córregos em São Paulo só descobre que a rua vai alagar quando a água já está entrando em casa, sem tempo para proteger pessoas, documentos e bens. |
 | **Como funciona** | Sensores de baixo custo medem o nível do córrego e a chuva; quando o nível cruza um limite, o morador inscrito naquela área recebe um alerta no celular com o que fazer e o abrigo mais próximo. Os próprios moradores também reportam alagamentos pelo app, e relatos confirmados viram alerta comunitário. |
