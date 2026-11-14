@@ -5,6 +5,9 @@ spring:
   application:
     name: telemetria
 
+  config:
+    import: optional:file:.env[.properties]
+
   web:
     locale: pt_BR
     locale-resolver: fixed
@@ -51,6 +54,7 @@ springdoc:
   swagger-ui:
     path: /swagger-ui.html
     operations-sorter: method
+    deep-linking: true
 
 management:
   endpoints:
